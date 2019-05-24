@@ -1,0 +1,5 @@
+To compile, 
+
+nasm -felf64 <file.>asm -o <file>.o
+ls -o <file> <file>.o
+chmod u+x <file>
