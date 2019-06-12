@@ -15,6 +15,8 @@ _start:
 	mov rdi, 1234
 	call print_uint
 	call print_newline
+	mov rdi, -1234
+	call print_int
 	jmp exit
 
 exit:
@@ -88,4 +90,11 @@ print_uint:
 	jmp .revprint
 
   .end:
+	ret
+
+print_int:
+	cmp rdi, 0
+	jg print_uint
+	neg rdi
+	call print_uint
 	ret
