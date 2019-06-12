@@ -94,7 +94,11 @@ print_uint:
 
 print_int:
 	cmp rdi, 0
-	jg print_uint
+	jg print_uint 
+	push rdi
+	mov rdi, '-'
+	call print_char
+	pop rdi	
 	neg rdi
 	call print_uint
 	ret
