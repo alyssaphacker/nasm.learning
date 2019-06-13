@@ -17,6 +17,11 @@ _start:
 	call print_newline
 	mov rdi, -1234
 	call print_int
+	call print_newline
+	call read_char
+	mov rdi, rax
+	call print_char
+	call print_newline
 	jmp exit
 
 exit:
@@ -102,3 +107,17 @@ print_int:
 	neg rdi
 	call print_uint
 	ret
+
+read_char:
+	; no args, returns char in rax
+	push rax	;just make a spot in stack so i can read into the addr location
+	mov rsi, rsp	;the ptr to the place on the stack is arg to syscall read
+	mov rdi, 0	; stdin 
+	mov rax, 0	; syscall num for read
+	mov rdx, 1 	; length
+	syscall
+	pop rax
+	ret
+
+ 
+		
