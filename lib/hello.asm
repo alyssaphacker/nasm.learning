@@ -2,14 +2,17 @@ global _start
 
 section .data
 message: db 'aye sup dawg!', 10
-
+block: db 'xxxxxxxxxx', 10, 99, 0
 section .text
 
 _start:
+	mov rdi, block
+	call print_string
+	;mov 
+
 	mov rdi, 65
 	call print_char
-	call print_newline
-	
+	call print_newline	
 	mov rdi, message	; rdi <- arg for str_len
 	call print_string
 	mov rdi, 1234
@@ -120,4 +123,16 @@ read_char:
 	ret
 
  
-		
+read_word:	; takes buf addr and size in rdi, rsi  
+  .leading	
+	call read_char
+	cmp rax, 9 
+	je .leading
+	cmp rax, 10
+	je .leading
+	cmp rax, 32
+	je .leading
+
+	mov rdx, 0 ; avoid off-by-1 error... maybe change
+
+
