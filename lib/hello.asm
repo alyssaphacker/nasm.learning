@@ -123,16 +123,39 @@ read_char:
 	ret
 
  
-read_word:	; takes buf addr and size in rdi, rsi  
-  .leading	
+read_word:	; takes buf addr, size in rdi, rsi  
+  	push rdi	;going to inc this but need base to pop rax for ret
+  .leadingwhite	
 	call read_char
 	cmp rax, 9 
-	je .leading
+	je .leadingwhite
 	cmp rax, 10
-	je .leading
+	je .leadingwhite
 	cmp rax, 32
-	je .leading
+	je .leadingwhite
 
-	mov rdx, 0 ; avoid off-by-1 error... maybe change
+  .nonwhite
+	mov byte [rdi], al
+	call read_char
+	inc rdi 
+	dec rsi	
+	cmp rsi, 0
+	jne .nonwhite
+
+ 	cmp rax, 9
+	je .retbuf
+	cmp rax, 10
+	je .retbuf
+	cmp rax, 32
+	je .retbuf
+
+	xor rax, rax
+	ret
+  .retbuf
+	pop rax
+	ret		
+	
+
+
 
 
