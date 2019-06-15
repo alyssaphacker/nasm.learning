@@ -2,14 +2,18 @@ global _start
 
 section .data
 message: db 'aye sup dawg!', 10
-block: db 'xxxxxxxxxx', 10, 99, 0
+block: db 'xxxxxxxxxx', 0
 section .text
 
 _start:
 	mov rdi, block
 	call print_string
-	;mov 
-
+	mov rdi, block ;buf addr 
+	mov rsi, 10	;len
+	call read_word
+	mov rdi, block
+	call print_string
+	call print_newline
 	mov rdi, 65
 	call print_char
 	call print_newline	
@@ -112,6 +116,7 @@ print_int:
 	ret
 
 read_char:
+	push rdi
 	; no args, returns char in rax
 	push rax	;just make a spot in stack so i can read into the addr location
 	mov rsi, rsp	;the ptr to the place on the stack is arg to syscall read
@@ -120,12 +125,15 @@ read_char:
 	mov rdx, 1 	; length
 	syscall
 	pop rax
+	pop rdi
 	ret
 
  
-read_word:	; takes buf addr, size in rdi, rsi  
-  	push rdi	;going to inc this but need base to pop rax for ret
-  .leadingwhite	
+read_word:	;takes buf addr in rdi, size in rsi  
+  	push rdi	;going to use this reg but need bufbase to pop rax for ret
+  	dec rsi	;length -1
+  
+  .leadingwhite:
 	call read_char
 	cmp rax, 9 
 	je .leadingwhite
@@ -134,24 +142,27 @@ read_word:	; takes buf addr, size in rdi, rsi
 	cmp rax, 32
 	je .leadingwhite
 
-  .nonwhite
+  .nonwhite:
 	mov byte [rdi], al
-	call read_char
 	inc rdi 
 	dec rsi	
-	cmp rsi, 0
-	jne .nonwhite
 
- 	cmp rax, 9
+	call read_char
+	cmp rax, 9
 	je .retbuf
 	cmp rax, 10
 	je .retbuf
 	cmp rax, 32
 	je .retbuf
 
+	cmp rsi, 0
+	jne .nonwhite
+
+ 
 	xor rax, rax
 	ret
-  .retbuf
+  .retbuf:
+	mov byte[rdi], 0 ;attach nullbyte
 	pop rax
 	ret		
 	
