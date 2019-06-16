@@ -4,16 +4,16 @@ section .data
 message: db 'aye sup dawg', 0
 block: db 'xxxxxxxxxxxxxxxxxxxx', 0
 msg: db 'aye sup dawg', 0
-parseme: db '123456', 0
+parseme: db '-123456', 0
 
 
 section .text
 
 _start:
 	mov rdi, parseme
-	call parse_uint	
+	call parse_int	
 	mov rdi, rax
-	call print_uint
+	call print_int
 	call print_newline
 
 	mov rdi, msg
@@ -243,10 +243,20 @@ parse_uint:	;ptr to str in rdi. rets number in rax, char count in rdx
 	mul rcx	;accumulator shift, ie acc *=10
 	add rax, rbx	;accumulator += next int
 	jmp .loop
+ 
   .ret:
 	pop rdx
 	sub rdi, rdx
 	mov rdx, rsi
+	ret
+	
+parse_int:
+	cmp byte[rdi], '-'
+	jne parse_uint
+	
+	inc rdi
+	call parse_uint
+	neg rax
 	ret
 	
 	
