@@ -4,9 +4,18 @@ section .data
 message: db 'aye sup dawg', 0
 block: db 'xxxxxxxxxxxxxxxxxxxx', 0
 msg: db 'aye sup dawg', 0
+parseme: db '123456', 0
+
+
 section .text
 
 _start:
+	mov rdi, parseme
+	call parse_uint	
+	mov rdi, rax
+	call print_uint
+	call print_newline
+
 	mov rdi, msg
 	mov rsi, block
 	mov rdx, 15
@@ -219,6 +228,28 @@ strcpy:	;rdi <- ptr to str, rsi <- ptr to buf, rdx <- buf len
   .ovrflo:
 	mov rax, 0
 	ret		
+
+parse_uint:	;ptr to str in rdi. rets number in rax, char count in rdx
+	push rdi
+	xor rax, rax
+	mov rcx, 10
+
+  .loop:
+	mov bl, byte[rdi]
+	cmp rbx, 0
+	je .ret
+	inc rdi	;ptr advanced
+	sub rbx, 48	;convert atoi
+	mul rcx	;accumulator shift, ie acc *=10
+	add rax, rbx	;accumulator += next int
+	jmp .loop
+  .ret:
+	pop rdx
+	sub rdi, rdx
+	mov rdx, rsi
+	ret
+	
+	
 
 
 
