@@ -1,11 +1,21 @@
 global _start
 
 section .data
-message: db 'aye sup dawg!', 10
+message: db 'aye sup dawg', 0
 block: db 'xxxxxxxxxx', 0
+msg: db 'aye sup dawg', 0
 section .text
 
 _start:
+	mov rdi, message
+	mov rsi, msg
+	call string_equals
+	add rax, 48	;zero in ASCII
+	mov rdi, rax
+	call print_char
+	call print_newline
+
+
 	mov rdi, block
 	call print_string
 	mov rdi, block ;buf addr 
@@ -166,7 +176,21 @@ read_word:	;takes buf addr in rdi, size in rsi
 	pop rax
 	ret		
 	
-
+string_equals:		
+	mov al, byte[rsi]
+	mov dl, byte[rdi]
+	inc rsi
+	inc rdi
+	cmp al, dl
+	jne .ret0
+	cmp al, 0
+	jne string_equals
+  .ret1:
+	mov rax, 1
+	ret
+  .ret0:
+	mov rax, 0
+	ret
 
 
 
