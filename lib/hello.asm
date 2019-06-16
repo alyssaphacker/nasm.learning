@@ -2,13 +2,21 @@ global _start
 
 section .data
 message: db 'aye sup dawg', 0
-block: db 'xxxxxxxxxx', 0
+block: db 'xxxxxxxxxxxxxxxxxxxx', 0
 msg: db 'aye sup dawg', 0
 section .text
 
 _start:
+	mov rdi, msg
+	mov rsi, block
+	mov rdx, 15
+	call strcpy
+	mov rdi, rax
+	call print_string
+	call print_newline 	
+
 	mov rdi, message
-	mov rsi, msg
+	mov rsi, block
 	call string_equals
 	add rax, 48	;zero in ASCII
 	mov rdi, rax
@@ -191,6 +199,37 @@ string_equals:
   .ret0:
 	mov rax, 0
 	ret
+
+strcpy:	;rdi <- ptr to str, rsi <- ptr to buf, rdx <- buf len
+	push rsi	;going to ret this in rax if success
+  .loop:
+	dec rdx
+	cmp rdx, 0
+	je .ovrflo
+
+	mov al, byte[rdi]
+	mov byte[rsi], al
+	inc rdi
+	inc rsi	
+	cmp al, 0
+	jne .loop
+	pop rax
+	ret
+
+  .ovrflo:
+	mov rax, 0
+	ret		
+
+
+
+
+
+
+
+
+
+
+
 
 
 
