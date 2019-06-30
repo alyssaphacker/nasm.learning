@@ -100,7 +100,7 @@ print_uint:
 
 print_int:
 	cmp rdi, 0
-	jg print_uint 
+	jge print_uint 
 	push rdi
 	mov rdi, '-'
 	call print_char
