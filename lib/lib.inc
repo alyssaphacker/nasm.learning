@@ -167,6 +167,7 @@ string_equals:
 
 string_copy:	;rdi <- ptr to str, rsi <- ptr to buf, rdx <- buf len
 	push rsi	;going to ret this in rax if success
+	inc rdx
   .loop:
 	dec rdx
 	cmp rdx, 0
