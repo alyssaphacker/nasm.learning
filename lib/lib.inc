@@ -9,55 +9,6 @@ parseme: db '-123456', 0
 
 section .text
 
-_start:
-	mov rdi, parseme
-	call parse_int	
-	mov rdi, rax
-	call print_int
-	call print_newline
-
-	mov rdi, msg
-	mov rsi, block
-	mov rdx, 15
-	call strcpy
-	mov rdi, rax
-	call print_string
-	call print_newline 	
-
-	mov rdi, message
-	mov rsi, block
-	call string_equals
-	add rax, 48	;zero in ASCII
-	mov rdi, rax
-	call print_char
-	call print_newline
-
-
-	mov rdi, block
-	call print_string
-	mov rdi, block ;buf addr 
-	mov rsi, 10	;len
-	call read_word
-	mov rdi, block
-	call print_string
-	call print_newline
-	mov rdi, 65
-	call print_char
-	call print_newline	
-	mov rdi, message	; rdi <- arg for str_len
-	call print_string
-	mov rdi, 1234
-	call print_uint
-	call print_newline
-	mov rdi, -1234
-	call print_int
-	call print_newline
-	call read_char
-	mov rdi, rax
-	call print_char
-	call print_newline
-	jmp exit
-
 exit:
 	mov rax, 60			; 'exit' syscall num
 	xor rdi, rdi		; zero rdi
@@ -66,10 +17,15 @@ exit:
 
 string_length:
 	xor rax, rax		; len in rax after proc
+	cmp byte [rdi+rax], 0	;test for null byte outside of loop, fix bug on ''
+	je .ret
  .loop:
 	inc rax
 	cmp byte [rdi+rax], 0
+	; inc rax
+	; dec rax
 	jnz .loop
+  .ret:
 	ret
 
 print_string:
@@ -209,7 +165,7 @@ string_equals:
 	mov rax, 0
 	ret
 
-strcpy:	;rdi <- ptr to str, rsi <- ptr to buf, rdx <- buf len
+string_copy:	;rdi <- ptr to str, rsi <- ptr to buf, rdx <- buf len
 	push rsi	;going to ret this in rax if success
   .loop:
 	dec rdx
