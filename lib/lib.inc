@@ -48,8 +48,8 @@ print_char:
 	ret
 
 print_newline:
-	mov rax, 1
-	mov rdi, 1
+mov rax, 1
+mov rdi, 1
 	mov rdx, 1
 	push 10
 	mov rsi, rsp
@@ -58,8 +58,8 @@ print_newline:
 	ret
 
 print_uint:
-	;handle initial zero! right now nothin would print
-
+	cmp rdi, 0
+	jz .handlezero
 	mov rax, rdi		;place arg into diff register
 	xor rbx, rbx		;count in rbx from zero
 	mov rdi, 10			;need 10 in a register 
@@ -85,6 +85,17 @@ print_uint:
 	jmp .revprint
 
   .end:
+	ret
+
+  .handlezero:
+	mov rsi, '0'
+	push rsi
+	mov rsi, rsp
+	mov rdi, 1
+	mov rdx, 1
+	mov rax, 1
+	syscall
+	pop rax
 	ret
 
 print_int:
